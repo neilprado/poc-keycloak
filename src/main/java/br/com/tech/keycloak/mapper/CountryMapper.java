@@ -10,7 +10,6 @@ import org.mapstruct.MappingTarget;
 import org.mapstruct.NullValuePropertyMappingStrategy;
 import org.mapstruct.factory.Mappers;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 
 @Mapper(componentModel = "spring")
 public interface CountryMapper {
@@ -19,13 +18,13 @@ public interface CountryMapper {
 
      Country persistToEntity(CountryPersist countryPersist);
 
+     Country updateToEntity(CountryUpdate countryUpdate);
+
      CountryResponse entityToResponse(Country country);
 
-
-     default Page<CountryResponse> PageEntityToPageResponse(Page<Country> countries){
-         return this::entityToResponse;
+     default Page<CountryResponse> pageToResponse(Page<Country> countries){
+       return countries.map(this::entityToResponse);
      }
-
      @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
-     Country toUpdate(@MappingTarget Country country, CountryUpdate countryUpdate);
+     Country toUpdate(@MappingTarget Country country, Country newCountry);
 }
